@@ -57,6 +57,15 @@ async function loadRecords() {
       row.append(cell);
     }
 
+    const actionCell = document.createElement("td");
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "delete-button";
+    deleteButton.dataset.entryId = entry.id;
+    deleteButton.textContent = "Löschen";
+    actionCell.append(deleteButton);
+    row.append(actionCell);
+
     return row;
   });
 
@@ -64,7 +73,35 @@ async function loadRecords() {
   recordsMessage.textContent = `${data.length} ${data.length === 1 ? "Eintrag" : "Einträge"}`;
 }
 
+async function deleteRecord(entryId, button) {
+  if (!currentUser || !confirm("Möchtest du diesen Eintrag wirklich löschen?")) {
+    return;
+  }
+
+  button.disabled = true;
+
+  const { error } = await supabase
+    .from("work_entries")
+    .delete()
+    .eq("id", entryId)
+    .eq("user_id", currentUser.id);
+
+  if (error) {
+    button.disabled = false;
+    recordsMessage.textContent =
+      "Der Eintrag konnte nicht gelöscht werden. Bitte versuche es erneut.";
+    return;
+  }
+
+  await loadRecords();
+}
+
 refreshButton.addEventListener("click", loadRecords);
+
+recordsBody.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-entry-id]");
+  if (button) deleteRecord(button.dataset.entryId, button);
+});
 
 initializeAuth((user) => {
   currentUser = user;

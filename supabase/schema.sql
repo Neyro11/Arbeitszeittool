@@ -16,7 +16,7 @@ create table if not exists public.work_entries (
 
 alter table public.work_entries enable row level security;
 
-grant select, insert on public.work_entries to authenticated;
+grant select, insert, delete on public.work_entries to authenticated;
 
 create policy "Users can view their own work entries"
   on public.work_entries
@@ -29,3 +29,9 @@ create policy "Users can insert their own work entries"
   for insert
   to authenticated
   with check (auth.uid() = user_id);
+
+create policy "Users can delete their own work entries"
+  on public.work_entries
+  for delete
+  to authenticated
+  using (auth.uid() = user_id);

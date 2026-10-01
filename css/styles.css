@@ -214,6 +214,17 @@ button:hover {
   background: var(--green-dark);
 }
 
+.delete-button {
+  border-color: var(--coral);
+  color: var(--coral);
+  background: transparent;
+}
+
+.delete-button:hover {
+  color: #fff;
+  background: var(--coral);
+}
+
 .secondary-button {
   color: var(--green-dark);
   background: transparent;
