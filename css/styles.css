@@ -1,12 +1,12 @@
 :root {
   color-scheme: light;
   --ink: #202923;
-  --muted: #647168;
+  --muted: #425c7a;
   --paper: #fbfcf9;
   --canvas: #edf1ec;
   --line: #d7dfd7;
-  --green: #28664d;
-  --green-dark: #194b37;
+  --green: #356287;
+  --green-dark: #141e52;
   --coral: #a33d31;
   --focus: #d27b34;
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
@@ -21,7 +21,7 @@ body {
   margin: 0;
   color: var(--ink);
   background-color: var(--canvas);
-  background-image: radial-gradient(#cdd7cc 0.7px, transparent 0.7px);
+  background-image: radial-gradient(#b1d7e5 0.7px, transparent 0.7px);
   background-size: 18px 18px;
 }
 
