@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3f5f2" />
+    <title>Meine Zeiten | Arbeitszeiterfassung</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script type="module" src="js/zeiten.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <p class="eyebrow">Arbeitsalltag · Zeiterfassung</p>
+      <h1>Meine Zeiten</h1>
+      <p class="intro">
+        Deine gespeicherten Arbeitstage, direkt aus deinem Konto geladen.
+      </p>
+      <nav class="page-nav" aria-label="Hauptnavigation">
+        <a href="index.html">Zeit erfassen</a>
+        <a href="zeiten.html" aria-current="page">Meine Zeiten</a>
+      </nav>
+    </header>
+
+    <main>
+      <section
+        class="auth-section"
+        id="auth-panel"
+        aria-labelledby="auth-heading"
+      >
+        <h2 id="auth-heading">Mit deinem Konto anmelden</h2>
+        <p class="auth-description">
+          Melde dich an, um deine gespeicherten Einträge abzurufen.
+        </p>
+        <form id="auth-form" class="auth-form">
+          <label for="auth-email">E-Mail-Adresse</label>
+          <input
+            id="auth-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+          />
+          <label for="auth-password">Passwort</label>
+          <input
+            id="auth-password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            minlength="8"
+            required
+          />
+          <div class="form-actions">
+            <button type="submit" name="authAction" value="sign-in">
+              Anmelden
+            </button>
+            <button
+              class="secondary-button"
+              type="submit"
+              name="authAction"
+              value="sign-up"
+            >
+              Konto erstellen
+            </button>
+          </div>
+        </form>
+        <p
+          class="auth-status"
+          id="auth-status"
+          role="status"
+          aria-live="polite"
+        ></p>
+      </section>
+
+      <section class="signed-in-bar" id="signed-in-bar" hidden>
+        <p>Angemeldet als <strong id="signed-in-email"></strong></p>
+        <button class="secondary-button" id="sign-out-button" type="button">
+          Abmelden
+        </button>
+      </section>
+
+      <section
+        class="records-section"
+        data-auth-required
+        hidden
+        aria-labelledby="records-heading"
+      >
+        <div class="records-toolbar">
+          <h2 class="records-heading" id="records-heading">
+            Erfasste Arbeitstage
+          </h2>
+          <button id="refresh-records" type="button">Aktualisieren</button>
+        </div>
+        <div class="records-table-wrap">
+          <table class="records-table">
+            <thead>
+              <tr>
+                <th scope="col">Datum</th>
+                <th scope="col">Beginn</th>
+                <th scope="col">Ende</th>
+                <th scope="col">Pause</th>
+                <th scope="col">Arbeitszeit</th>
+              </tr>
+            </thead>
+            <tbody id="records-body"></tbody>
+          </table>
+        </div>
+        <p
+          class="records-message"
+          id="records-message"
+          role="status"
+          aria-live="polite"
+        >
+          Lade Einträge …
+        </p>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <p>Die Pausenzeit wird von der Anwesenheitszeit abgezogen.</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3f5f2" />
+    <title>Arbeitszeiterfassung</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script type="module" src="js/script.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <p class="eyebrow">Arbeitsalltag · Zeiterfassung</p>
+      <h1>Arbeitszeit erfassen</h1>
+      <p class="intro">
+        Trage Arbeitsbeginn, Arbeitsende und Pause ein, um die effektive
+        Arbeitszeit zu berechnen.
+      </p>
+      <nav class="page-nav" aria-label="Hauptnavigation">
+        <a href="index.html" aria-current="page">Zeit erfassen</a>
+        <a href="zeiten.html">Meine Zeiten</a>
+      </nav>
+    </header>
+
+    <main>
+      <section
+        class="auth-section"
+        id="auth-panel"
+        aria-labelledby="auth-heading"
+      >
+        <h2 id="auth-heading">Mit deinem Konto anmelden</h2>
+        <p class="auth-description">
+          Deine Einträge sind nur für dein angemeldetes Konto sichtbar.
+        </p>
+        <form id="auth-form" class="auth-form">
+          <label for="auth-email">E-Mail-Adresse</label>
+          <input
+            id="auth-email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+          />
+          <label for="auth-password">Passwort</label>
+          <input
+            id="auth-password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            minlength="8"
+            required
+          />
+          <div class="form-actions">
+            <button type="submit" name="authAction" value="sign-in">
+              Anmelden
+            </button>
+            <button
+              class="secondary-button"
+              type="submit"
+              name="authAction"
+              value="sign-up"
+            >
+              Konto erstellen
+            </button>
+          </div>
+        </form>
+        <p
+          class="auth-status"
+          id="auth-status"
+          role="status"
+          aria-live="polite"
+        ></p>
+      </section>
+
+      <section class="signed-in-bar" id="signed-in-bar" hidden>
+        <p>Angemeldet als <strong id="signed-in-email"></strong></p>
+        <button class="secondary-button" id="sign-out-button" type="button">
+          Abmelden
+        </button>
+      </section>
+
+      <div data-auth-required hidden>
+        <section class="work-section" aria-labelledby="entry-heading">
+          <form class="work-form" id="work-form" novalidate>
+            <fieldset>
+              <legend id="entry-heading">Angaben zum Arbeitstag</legend>
+              <div class="field-grid">
+                <div class="field field-wide">
+                  <label for="employee-name">Name des Mitarbeitenden</label>
+                  <input
+                    id="employee-name"
+                    name="employeeName"
+                    type="text"
+                    autocomplete="name"
+                    required
+                  />
+                </div>
+                <div class="field field-wide">
+                  <label for="work-date">Datum</label>
+                  <input id="work-date" name="workDate" type="date" required />
+                </div>
+                <div class="field">
+                  <label for="work-start">Arbeitsbeginn</label>
+                  <input
+                    id="work-start"
+                    name="workStart"
+                    type="time"
+                    required
+                  />
+                </div>
+                <div class="field">
+                  <label for="work-end">Arbeitsende</label>
+                  <input id="work-end" name="workEnd" type="time" required />
+                </div>
+                <div class="field">
+                  <label for="break-minutes">Pause in Minuten</label>
+                  <input
+                    id="break-minutes"
+                    name="breakMinutes"
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputmode="numeric"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit">Arbeitszeit berechnen</button>
+              </div>
+            </fieldset>
+          </form>
+
+          <section class="result-section" aria-labelledby="result-heading">
+            <h2 class="result-label" id="result-heading">
+              Effektive Arbeitszeit
+            </h2>
+            <output
+              id="work-result"
+              name="workResult"
+              form="work-form"
+              aria-live="polite"
+              aria-atomic="true"
+              >Noch keine Berechnung durchgeführt.</output
+            >
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <footer class="page-footer">
+      <p>Die Pausenzeit wird von der Anwesenheitszeit abgezogen.</p>
+    </footer>
+  </body>
+</html>
