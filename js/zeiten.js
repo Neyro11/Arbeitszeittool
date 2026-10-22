@@ -62,7 +62,22 @@ async function loadRecords() {
     deleteButton.type = "button";
     deleteButton.className = "delete-button";
     deleteButton.dataset.entryId = entry.id;
-    deleteButton.textContent = "Löschen";
+    deleteButton.setAttribute("aria-label", "Eintrag löschen");
+    deleteButton.title = "Eintrag löschen";
+    const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    icon.setAttribute("aria-hidden", "true");
+    icon.setAttribute("focusable", "false");
+    icon.setAttribute("viewBox", "0 0 24 24");
+    const iconPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path",
+    );
+    iconPath.setAttribute(
+      "d",
+      "M4 7h16M10 11v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3",
+    );
+    icon.append(iconPath);
+    deleteButton.append(icon);
     actionCell.append(deleteButton);
     row.append(actionCell);
 
