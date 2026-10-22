@@ -3,23 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f3f5f2" />
-    <link rel="icon" type="image/png" href="assets/Favicon.jpeg.png" />
-    <title>Meine Zeiten | Arbeitszeiterfassung</title>
+    <meta name="theme-color" content="#f5f7ff" />
+    <link rel="icon" type="image/svg+xml" href="assets/stundenwerk.svg" />
+    <title>Übersicht | Stundenwerk</title>
     <link rel="stylesheet" href="css/styles.css" />
     <script type="module" src="js/zeiten.js"></script>
   </head>
   <body>
     <header class="page-header">
-      <p class="eyebrow">Arbeitsalltag · Zeiterfassung</p>
-      <h1>Meine Zeiten</h1>
-      <p class="intro">
-        Deine gespeicherten Arbeitstage, direkt aus deinem Konto geladen.
-      </p>
+      <a class="brand" href="index.html" aria-label="Stundenwerk Startseite">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>stundenwerk<span class="brand-period">.</span></span>
+      </a>
       <nav class="page-nav" aria-label="Hauptnavigation">
-        <a href="index.html">Zeit erfassen</a>
-        <a href="zeiten.html" aria-current="page">Meine Zeiten</a>
+        <a href="index.html">Zeiterfassung</a>
+        <a href="zeiten.html" aria-current="page">Übersicht</a>
       </nav>
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span> Deine Stunden, sortiert</p>
+        <h1>Dein Überblick.<br /><span>Dein Fortschritt.</span></h1>
+        <p class="intro">Finde, bearbeite und exportiere deine erfassten Arbeitstage.</p>
+      </div>
+      <div class="hero-orbit" aria-hidden="true">
+        <span class="orbit-ring"></span>
+        <span class="orbit-clock">24<span>/</span>7</span>
+        <span class="orbit-caption">Zeit gut genutzt.</span>
+      </div>
     </header>
 
     <main>
@@ -73,34 +82,65 @@
       </section>
 
       <section class="signed-in-bar" id="signed-in-bar" hidden>
-        <p>Angemeldet als <strong id="signed-in-email"></strong></p>
-        <button class="secondary-button" id="sign-out-button" type="button">
-          Abmelden
-        </button>
+        <p><span class="avatar" aria-hidden="true">👋</span> Willkommen zurück, <strong id="signed-in-email"></strong></p>
+        <button class="secondary-button" id="sign-out-button" type="button">Abmelden</button>
       </section>
 
-      <section
-        class="records-section"
-        data-auth-required
-        hidden
-        aria-labelledby="records-heading"
-      >
+      <div data-auth-required hidden>
+      <section class="records-section" aria-labelledby="records-heading">
+        <div class="stats-grid" aria-label="Zusammenfassung">
+          <article class="stat-card stat-card-accent">
+            <span class="stat-label">Gefilterte Arbeitstage</span>
+            <strong id="stat-days">–</strong>
+            <span class="stat-footnote">Einträge passend zu den Filtern</span>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Effektive Arbeitszeit</span>
+            <strong id="stat-hours">–</strong>
+            <span class="stat-footnote">Summe nach Abzug der Pausen</span>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Pausenzeit</span>
+            <strong id="stat-breaks">–</strong>
+            <span class="stat-footnote">Erfasste Pausen insgesamt</span>
+          </article>
+        </div>
         <div class="records-toolbar">
-          <h2 class="records-heading" id="records-heading">
-            Erfasste Arbeitstage
-          </h2>
-          <button id="refresh-records" type="button">Aktualisieren</button>
+          <div>
+            <p class="eyebrow">Deine Daten</p>
+            <h2 class="records-heading" id="records-heading">Erfasste Arbeitstage</h2>
+          </div>
+          <div class="toolbar-actions">
+            <button class="secondary-button" id="export-records" type="button">↓ CSV exportieren</button>
+            <button id="refresh-records" type="button">Aktualisieren</button>
+          </div>
+        </div>
+        <div class="filter-bar" aria-label="Einträge filtern">
+          <div class="field">
+            <label for="filter-from">Von</label>
+            <input id="filter-from" type="date" />
+          </div>
+          <div class="field">
+            <label for="filter-to">Bis</label>
+            <input id="filter-to" type="date" />
+          </div>
+          <div class="field">
+            <label for="filter-name">Name suchen</label>
+            <input id="filter-name" type="search" placeholder="Mitarbeitenden-Name" />
+          </div>
+          <button class="text-button" id="clear-filters" type="button">Filter zurücksetzen</button>
         </div>
         <div class="records-table-wrap">
           <table class="records-table">
             <thead>
               <tr>
                 <th scope="col">Datum</th>
+                <th scope="col">Mitarbeitende</th>
                 <th scope="col">Beginn</th>
                 <th scope="col">Ende</th>
                 <th scope="col">Pause</th>
                 <th scope="col">Arbeitszeit</th>
-                <th scope="col">Aktion</th>
+                <th scope="col">Aktionen</th>
               </tr>
             </thead>
             <tbody id="records-body"></tbody>
@@ -115,10 +155,83 @@
           Lade Einträge …
         </p>
       </section>
+      <details class="profile-section">
+        <summary>
+          <span><span class="eyebrow">Persönlich</span><strong>Profil &amp; Vorgaben</strong></span>
+          <span class="summary-icon" aria-hidden="true">＋</span>
+        </summary>
+        <form id="profile-form" class="profile-form">
+          <p class="auth-description">Passe deinen Profilnamen und den bearbeitbaren Namensvorschlag für neue Einträge an.</p>
+          <div class="field-grid">
+            <div class="field">
+              <label for="profile-name">Profilname</label>
+              <input id="profile-name" name="profileName" type="text" autocomplete="name" placeholder="Dein Name" />
+            </div>
+            <div class="field">
+              <label for="preferred-employee-name">Vorschlag für Mitarbeitenden-Namen</label>
+              <input id="preferred-employee-name" name="preferredEmployeeName" type="text" placeholder="Wird beim Erfassen vorgeschlagen" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="button-primary" type="submit">Änderungen speichern</button>
+            <button class="delete-text-button" id="delete-account-button" type="button">Konto löschen</button>
+          </div>
+          <p class="form-status" id="profile-status" role="status" aria-live="polite"></p>
+        </form>
+      </details>
+      <dialog class="confirm-dialog" id="delete-account-dialog" aria-labelledby="delete-account-heading">
+        <form id="delete-account-form">
+          <p class="eyebrow">Achtung · endgültig</p>
+          <h2 id="delete-account-heading">Konto wirklich löschen?</h2>
+          <p>Dein Konto und alle gespeicherten Arbeitszeiten werden dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.</p>
+          <label for="delete-account-confirmation">Tippe <strong>LÖSCHEN</strong> zur Bestätigung</label>
+          <input id="delete-account-confirmation" autocomplete="off" required />
+          <p class="form-status" id="delete-account-status" role="status" aria-live="polite"></p>
+          <div class="form-actions">
+            <button class="secondary-button" id="cancel-delete-account" type="button">Abbrechen</button>
+            <button class="delete-button" type="submit">Endgültig löschen</button>
+          </div>
+        </form>
+      </dialog>
+      <dialog class="confirm-dialog edit-dialog" id="edit-entry-dialog" aria-labelledby="edit-entry-heading">
+        <form id="edit-entry-form">
+          <p class="eyebrow">Eintrag verwalten</p>
+          <h2 id="edit-entry-heading">Arbeitstag bearbeiten</h2>
+          <input type="hidden" name="entryId" />
+          <div class="field-grid">
+            <div class="field field-wide">
+              <label for="edit-employee-name">Name des Mitarbeitenden</label>
+              <input id="edit-employee-name" name="employeeName" type="text" required />
+            </div>
+            <div class="field field-wide">
+              <label for="edit-work-date">Datum</label>
+              <input id="edit-work-date" name="workDate" type="date" required />
+            </div>
+            <div class="field">
+              <label for="edit-work-start">Arbeitsbeginn</label>
+              <input id="edit-work-start" name="workStart" type="time" required />
+            </div>
+            <div class="field">
+              <label for="edit-work-end">Arbeitsende</label>
+              <input id="edit-work-end" name="workEnd" type="time" required />
+            </div>
+            <div class="field">
+              <label for="edit-break-minutes">Pause in Minuten</label>
+              <input id="edit-break-minutes" name="breakMinutes" type="number" min="0" step="1" required />
+            </div>
+          </div>
+          <p class="form-status" id="edit-entry-status" role="status" aria-live="polite"></p>
+          <div class="form-actions">
+            <button class="secondary-button" id="cancel-edit-entry" type="button">Abbrechen</button>
+            <button class="button-primary" type="submit">Änderungen speichern</button>
+          </div>
+        </form>
+      </dialog>
+      </div>
     </main>
 
     <footer class="page-footer">
-      <p>Die Pausenzeit wird von der Anwesenheitszeit abgezogen.</p>
+      <p><span class="brand-mark brand-mark-small" aria-hidden="true">S</span> Stundenwerk <span>·</span> Deine Zeit, im Blick.</p>
     </footer>
   </body>
 </html>

@@ -3,24 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f3f5f2" />
-    <link rel="icon" type="image/png" href="assets/Favicon.jpeg.png" />
-    <title>Arbeitszeiterfassung</title>
+    <meta name="theme-color" content="#f5f7ff" />
+    <link rel="icon" type="image/svg+xml" href="assets/stundenwerk.svg" />
+    <title>Stundenwerk | Arbeitszeiterfassung</title>
     <link rel="stylesheet" href="css/styles.css" />
     <script type="module" src="js/script.js"></script>
   </head>
   <body>
     <header class="page-header">
-      <p class="eyebrow">Arbeitsalltag · Zeiterfassung</p>
-      <h1>Arbeitszeit erfassen</h1>
-      <p class="intro">
-        Trage Arbeitsbeginn, Arbeitsende und Pause ein, um die effektive
-        Arbeitszeit zu berechnen.
-      </p>
+      <a class="brand" href="index.html" aria-label="Stundenwerk Startseite">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span>stundenwerk<span class="brand-period">.</span></span>
+      </a>
       <nav class="page-nav" aria-label="Hauptnavigation">
-        <a href="index.html" aria-current="page">Zeit erfassen</a>
-        <a href="zeiten.html">Meine Zeiten</a>
+        <a href="index.html" aria-current="page">Zeiterfassung</a>
+        <a href="zeiten.html">Übersicht</a>
       </nav>
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span> Dein Arbeitstag im Blick</p>
+        <h1>Gute Arbeit.<br /><span>Gut erfasst.</span></h1>
+      <p class="intro">
+          Erfasse deine Arbeitszeit einfach und behalte deine Stunden im Blick.
+      </p>
+      </div>
+      <div class="hero-orbit" aria-hidden="true">
+        <span class="orbit-ring"></span>
+        <span class="orbit-clock">08<span>:</span>00</span>
+        <span class="orbit-caption">Dein Tag. Dein Rhythmus.</span>
+      </div>
     </header>
 
     <main>
@@ -74,17 +84,22 @@
       </section>
 
       <section class="signed-in-bar" id="signed-in-bar" hidden>
-        <p>Angemeldet als <strong id="signed-in-email"></strong></p>
-        <button class="secondary-button" id="sign-out-button" type="button">
-          Abmelden
-        </button>
+        <p><span class="avatar" aria-hidden="true">👋</span> Willkommen zurück, <strong id="signed-in-email"></strong></p>
+        <button class="secondary-button" id="sign-out-button" type="button">Abmelden</button>
       </section>
 
       <div data-auth-required hidden>
         <section class="work-section" aria-labelledby="entry-heading">
           <form class="work-form" id="work-form" novalidate>
             <fieldset>
-              <legend id="entry-heading">Angaben zum Arbeitstag</legend>
+              <legend class="visually-hidden" id="entry-heading">Neuen Arbeitstag erfassen</legend>
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">Zeiterfassung</p>
+                  <h2>Neuen Arbeitstag erfassen</h2>
+                </div>
+                <span class="today-badge"><span class="status-dot"></span> Sicher gespeichert</span>
+              </div>
               <div class="field-grid">
                 <div class="field field-wide">
                   <label for="employee-name">Name des Mitarbeitenden</label>
@@ -93,6 +108,7 @@
                     name="employeeName"
                     type="text"
                     autocomplete="name"
+                    placeholder="z. B. Robin Köpfli"
                     required
                   />
                 </div>
@@ -127,7 +143,8 @@
                 </div>
               </div>
               <div class="form-actions">
-                <button id="calculate-work-time" type="button">
+                <button class="button-primary" id="calculate-work-time" type="button">
+                  <span aria-hidden="true">✦</span>
                   Arbeitszeit berechnen
                 </button>
                 <button
@@ -136,6 +153,7 @@
                   type="button"
                   disabled
                 >
+                  <span aria-hidden="true">＋</span>
                   Eintragen
                 </button>
               </div>
@@ -154,13 +172,53 @@
               aria-atomic="true"
               >Noch keine Berechnung durchgeführt.</output
             >
+            <p class="result-hint">Deine Pause wird automatisch abgezogen.</p>
           </section>
         </section>
+
+        <details class="profile-section">
+          <summary>
+            <span><span class="eyebrow">Persönlich</span><strong>Profil &amp; Vorgaben</strong></span>
+            <span class="summary-icon" aria-hidden="true">＋</span>
+          </summary>
+          <form id="profile-form" class="profile-form">
+            <p class="auth-description">Passe deinen Profilnamen und den bearbeitbaren Namensvorschlag für neue Einträge an.</p>
+            <div class="field-grid">
+              <div class="field">
+                <label for="profile-name">Profilname</label>
+                <input id="profile-name" name="profileName" type="text" autocomplete="name" placeholder="Dein Name" />
+              </div>
+              <div class="field">
+                <label for="preferred-employee-name">Vorschlag für Mitarbeitenden-Namen</label>
+                <input id="preferred-employee-name" name="preferredEmployeeName" type="text" placeholder="Wird beim Erfassen vorgeschlagen" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="button-primary" type="submit">Änderungen speichern</button>
+              <button class="delete-text-button" id="delete-account-button" type="button">Konto löschen</button>
+            </div>
+            <p class="form-status" id="profile-status" role="status" aria-live="polite"></p>
+          </form>
+        </details>
       </div>
+      <dialog class="confirm-dialog" id="delete-account-dialog" aria-labelledby="delete-account-heading">
+        <form id="delete-account-form">
+          <p class="eyebrow">Achtung · endgültig</p>
+          <h2 id="delete-account-heading">Konto wirklich löschen?</h2>
+          <p>Dein Konto und alle gespeicherten Arbeitszeiten werden dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.</p>
+          <label for="delete-account-confirmation">Tippe <strong>LÖSCHEN</strong> zur Bestätigung</label>
+          <input id="delete-account-confirmation" autocomplete="off" required />
+          <p class="form-status" id="delete-account-status" role="status" aria-live="polite"></p>
+          <div class="form-actions">
+            <button class="secondary-button" id="cancel-delete-account" type="button">Abbrechen</button>
+            <button class="delete-button" type="submit">Endgültig löschen</button>
+          </div>
+        </form>
+      </dialog>
     </main>
 
     <footer class="page-footer">
-      <p>Die Pausenzeit wird von der Anwesenheitszeit abgezogen.</p>
+      <p><span class="brand-mark brand-mark-small" aria-hidden="true">S</span> Stundenwerk <span>·</span> Deine Zeit, im Blick.</p>
     </footer>
   </body>
 </html>

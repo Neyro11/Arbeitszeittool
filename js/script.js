@@ -1,5 +1,6 @@
 import { supabase } from "./supabase.js";
 import { initializeAuth } from "./auth.js";
+import { initializeProfile } from "./profile.js";
 
 const form = document.querySelector("#work-form");
 const result = document.querySelector("#work-result");
@@ -9,11 +10,21 @@ const calculateButton = document.querySelector("#calculate-work-time");
 const saveButton = document.querySelector("#save-work-entry");
 let currentUser = null;
 let calculatedEntry = null;
+let employeeNameWasEdited = false;
 
 initializeAuth((user) => {
+  if (currentUser?.id !== user?.id) {
+    employeeNameWasEdited = false;
+    employeeName.value = "";
+  }
   currentUser = user;
+  initializeProfile(user);
 
-  if (user?.email && !employeeName.value.trim()) {
+  const preferredName = user?.user_metadata?.employee_name;
+  const profileName = user?.user_metadata?.full_name;
+  if (!employeeNameWasEdited && (preferredName || profileName)) {
+    employeeName.value = preferredName || profileName;
+  } else if (!employeeNameWasEdited && user?.email && !employeeName.value.trim()) {
     const localPart = user.email.split("@")[0].split("+")[0];
     const nameSuggestion = localPart
       .split(/[._-]+/)
@@ -27,6 +38,16 @@ initializeAuth((user) => {
 
     if (nameSuggestion) employeeName.value = nameSuggestion;
   }
+});
+
+window.addEventListener("profile-updated", (event) => {
+  if (!employeeNameWasEdited && event.detail.employee_name) {
+    employeeName.value = event.detail.employee_name;
+  }
+});
+
+employeeName.addEventListener("input", () => {
+  employeeNameWasEdited = true;
 });
 
 function getToday() {
@@ -47,6 +68,7 @@ function calculateWorkTime() {
   calculatedEntry = null;
   saveButton.disabled = true;
   workDate.max = getToday();
+  workDate.value = getToday();
 
   if (!form.reportValidity()) {
     showResult("Bitte fülle alle Felder aus und prüfe die Eingaben.", true);

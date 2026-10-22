@@ -1,6 +1,42 @@
 Unser Zeiterfassungs Tool im Auftrag von der GIBZ Schule.
 Wir haben dieses Projekt im Rahmen des Modul 431 umgesetzt.
 
+## Neue Funktionen einrichten
+
+### Datenbank aktualisieren
+
+Die Übersicht kann Einträge bearbeiten. Führe für eine bestehende Supabase-Datenbank im SQL Editor folgende Änderung aus (die restlichen SQL-Statements in `supabase/schema.sql` nicht erneut ausführen):
+
+```sql
+grant update on public.work_entries to authenticated;
+
+drop policy if exists "Users can update their own work entries"
+  on public.work_entries;
+
+create policy "Users can update their own work entries"
+  on public.work_entries
+  for update
+  to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+```
+
+Bei einer neuen Datenbank kann das vollständige `supabase/schema.sql` verwendet werden.
+
+### Kontolöschung aktivieren
+
+Das Löschen eines Kontos benötigt privilegierte Supabase-Rechte und wird deshalb nicht direkt im Browser ausgeführt. Installiere die Supabase CLI, melde dich am richtigen Supabase-Projekt an und deploye die Funktion:
+
+```powershell
+supabase login
+supabase link --project-ref hpqdpdmkhnlskelhtqyb
+supabase functions deploy delete-account
+```
+
+Die Edge Function verwendet die vom Supabase-Projekt bereitgestellten Umgebungsvariablen `SUPABASE_URL`, `SUPABASE_ANON_KEY` und `SUPABASE_SERVICE_ROLE_KEY`. Der angemeldete Nutzer wird anhand seines Zugriffstokens geprüft; gelöscht wird ausschließlich dessen eigenes Konto. Die vorhandene Fremdschlüsselbeziehung löscht seine Arbeitszeiteinträge automatisch mit.
+
+Das Profil und der Vorschlag für den Mitarbeitenden-Namen werden in den Metadaten des angemeldeten Supabase-Kontos gespeichert. Die CSV-Funktion exportiert die aktuell gefilterten Einträge lokal im Browser.
+
 Hier finden Sie noch unseren Plan:
 
 1. Initialisierung
